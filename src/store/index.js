@@ -1,14 +1,17 @@
 import { createStore } from "vuex";
 
-const store = createStore({
+//creamos la store
+const store = createStore({ //variables
     state() {
         return {
-            userId: "hola",
+            userId: "",
             errorAlert: false,
-            userHistory: []
+            userHistory: [],
+            topCryptos: []
         }
     },
-    mutations: {
+    
+    mutations: { //metodos
         changeUserId(state, value){
             state.userId = value;
         },
@@ -17,6 +20,9 @@ const store = createStore({
         },
         changeUserHistory (state, value) {
             state.userHistory = value;
+        },
+        changeTopCrypto (state, value) {
+            state.topCryptos = value;
         }
     }
 });
