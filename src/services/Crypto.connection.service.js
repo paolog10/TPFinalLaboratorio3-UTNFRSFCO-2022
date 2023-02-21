@@ -7,4 +7,3 @@ const CryptoInstance = axios.create({ //API - datos para obtener las principales
 
 export default CryptoInstance;
 
-//https://criptoya.com/api
