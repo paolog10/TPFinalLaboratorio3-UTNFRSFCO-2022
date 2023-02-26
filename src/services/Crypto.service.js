@@ -13,6 +13,7 @@ export default new (class CryptoService {
           data[index].symbol.toUpperCase(),
           1
         );
+        //agregamos un elemento más, criptos en $ARS
         let arrayCurrenPrice = Object.entries(currentPrice).map((elem) => {
           return { ...elem[1], name: elem[0] };
         });

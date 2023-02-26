@@ -65,6 +65,7 @@ async function handledSubmit(e) {
     store.commit("changeErrorAlert", false); // desactiva la alerta de error
 
     const history = await UserService.getHistory(store.state.userId); // creo una variable, funcíon asíncrona getHistory obtengo el historial de usuario
+    console.log(history);
     store.commit("changeUserHistory", history); //cambiar el historial de usuario
     router.push("/panel"); //me lleva al panel de la billetera
 

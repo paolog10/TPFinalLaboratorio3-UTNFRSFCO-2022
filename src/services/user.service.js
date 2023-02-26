@@ -7,4 +7,8 @@ export default new (class UserService {
     );
     return response.data;
   }
+
+  async createPurchase(data) {
+    const response = await UtnInstance.post("transactions", data, {});
+  }
 })();
