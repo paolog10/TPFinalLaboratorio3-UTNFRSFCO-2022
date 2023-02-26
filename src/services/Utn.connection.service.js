@@ -6,7 +6,7 @@ profe - Esto ayuda a que si se recarga la página, no se pierdan los datos (ya q
 
 const UtnInstance = axios.create({
   baseURL: "https://laboratorio3-f36a.restdb.io/rest/",
-  timeout: 3000,
+  timeout: 5000,
   headers: { "x-apikey": "60eb09146661365596af552f" },
 });
 
