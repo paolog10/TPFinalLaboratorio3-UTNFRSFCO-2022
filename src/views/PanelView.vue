@@ -13,6 +13,9 @@
       <li class="mx-4 my-2 font-bold">
         <a href="#movimientos">Movimientos</a>
       </li>
+      <li class="mx-4 my-2 font-bold">
+        <a href="#edicion">Edición</a>
+      </li>
     </ul>
     <div class="flex justify-end items-center w-[20%] gap-3">
       <!--https://www.softzone.es/app/uploads/2018/04/guest.png-->
@@ -136,7 +139,65 @@
     <div
       class="flex justify-center items-center flex-col w-full h-[50vh] bg-red-500"
     >
-      <h1 class="font-bold text-[40px] select-none">Venta</h1>
+      <h1 class="font-bold text-[40px] select-none">Venta Criptomoneda</h1>
+      <div class="flex justify-center items-center w-[70%] h-[35%] gap-[40px]">
+        <div
+          class="flex flex-col justify-center items-center w-[30%] h-[45%] bg-white"
+        >
+          <div class="w-full text-sm pl-2">Cryptomoneda a vender</div>
+          <form class="flex outline-none pl-2">
+            <input
+              id="criptoMoneySale"
+              type="number"
+              class="w-[60%] text-center outline-none"
+              placeholder="Cantidad a vender"
+              @change="(e) => handlerChangeCryptoCountSale(e)"
+            />
+
+            <select
+              class="w-[40%] text-center"
+              @change="(e) => handlerChangeSelectCriptoSale(e)"
+            >
+              <option value="">-</option>
+              <option
+                v-for="elem in $store.state.topCryptos"
+                :value="elem.symbol"
+              >
+                <p>{{ elem.name }}</p>
+              </option>
+            </select>
+          </form>
+        </div>
+
+        <div
+          class="flex flex-col justify-center items-center w-[20%] h-[45%] bg-white"
+        >
+          <div class="w-full text-sm pl-2">En la billetera tienes</div>
+          <p>{{ $store.state.criptoSaved }}</p>
+        </div>
+
+        <div class="flex flex-col w-[20%] h-[45%] bg-white">
+          <div class="text-sm pl-2">Tú vendes</div>
+          <div class="flex justify-center items-center w-full h-full">
+            <p>
+              {{ store.state.convertedMoneySale }}
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-col justify-center items-center w-[20%] h-[45%] bg-white"
+        >
+          <div class="w-full text-sm pl-2">Día de venta</div>
+          <input id="diaVenta" type="date" class="pl-2" required />
+        </div>
+
+        <div
+          class="flex justify-center items-center w-[20%] h-[45%] bg-white rounded-xl"
+        >
+          <button @click="($event) => handlerSubmitSale()">Vender Ahora</button>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -144,10 +205,13 @@
     <div
       class="flex justify-center items-center flex-col w-full h-[60vh] bg-green-500 gap-3"
     >
-    <h1 class="font-bold text-[40px]">Movimientos</h1>
-      <div class="flex justify-start items-center h-[30rem] flex-col h-[40vh] overflow-y-scroll">
+      <h1 class="font-bold text-[40px]">Movimientos</h1>
+      <div
+        class="flex justify-start items-center h-[30rem] flex-col h-[40vh] overflow-y-scroll"
+      >
         <table
           class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+          id="miTabla"
         >
           <thead
             class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky top-0 text-center"
@@ -167,12 +231,88 @@
             >
               <td class="px-6 py-4">{{ elem.datetime }}</td>
               <td class="px-6 py-4">{{ elem.money }}</td>
-              <td class="px-6 py-4">{{ elem.action == "purchase"? "Compra" : "Venta" }}</td>
+              <td class="px-6 py-4">
+                {{ elem.action == "purchase" ? "Compra" : "Venta" }}
+              </td>
               <td class="px-6 py-4">{{ elem.crypto_amount }}</td>
               <td class="px-6 py-4">{{ elem.crypto_code.toUpperCase() }}</td>
             </tr>
           </tbody>
         </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="edicion">
+    <div
+      class="flex justify-center items-center flex-col w-full h-[60vh] bg-blue-500 gap-3"
+    >
+      <div
+        class="flex justify-start items-center flex-col h-[40vh] overflow-y-scroll"
+      >
+        <table
+          class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+        >
+          <thead
+            class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky top-0 text-center"
+          >
+            <tr>
+              <th scope="col" class="px-6 py-3">Fecha Alta</th>
+              <th scope="col" class="px-6 py-3">Monto $ARS</th>
+              <th scope="col" class="px-6 py-3">Compra/Venta</th>
+              <th scope="col" class="px-6 py-3">Cantidad Monedas</th>
+              <th scope="col" class="px-6 py-3">Tipo Criptomoneda</th>
+              <th scope="col" class="px-6 py-3">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="">
+            <tr
+              class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 text-center"
+              v-for="elem in $store.state.userHistory"
+            >
+              <td class="px-6 py-4">{{ elem.datetime }}</td>
+              <td class="px-6 py-4">{{ elem.money }}</td>
+              <td class="px-6 py-4">
+                {{ elem.action == "purchase" ? "Compra" : "Venta" }}
+              </td>
+              <td class="px-6 py-4">{{ elem.crypto_amount }}</td>
+              <td class="px-6 py-4">{{ elem.crypto_code.toUpperCase() }}</td>
+              <td class="grid grid-cols-2 px-6 py-4 gap-2">
+                <button class="flex jsutify-center items-center bg-green-300">
+                  <p
+                    class="w-full text-sm font-bold text-black"
+                    @click="(e) => handlerChangeEditID(elem._id)"
+                  >
+                    Editar
+                  </p>
+                </button>
+                <button
+                  class="flex justify-center items-center bg-red-300"
+                  @click="(e) => handlerDelete(elem._id)"
+                >
+                  <p class="w-full text-sm font-bold text-black">Eliminar</p>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div v-if="store.state.editID" class="w-[70%] h-[100px] bg-white">
+        <p>Usted quiere editar el registro {{ store.state.editID }}</p>
+        <form @submit="(e) => handlerEdit(e)">
+          <input type="text" id="mount" placeholder="Monto" />
+          <input type="text" id="money" placeholder="Cantidad de dinero" />
+          <select id="type">
+            <option value="">Selecciona una cripto</option>
+            <option
+              v-for="elem in $store.state.topCryptos"
+              :value="elem.symbol"
+            >
+              <p>{{ elem.name }}</p>
+            </option>
+          </select>
+          <button>Editar registro</button>
+        </form>
       </div>
     </div>
   </section>
@@ -223,6 +363,47 @@ function handlerSubmit() {
         store.commit("changeUserHistory", history);
       });
     }); //se cumple promesa
+
+  alert("Compra de criptomoneda correcta");
+}
+
+function handlerSubmitSale() {
+  let daySale = document.getElementById("diaVenta").value;
+  daySale = {
+    day: new Date(daySale).getDate(),
+    month: new Date(daySale).getMonth(),
+    year: new Date(daySale).getFullYear(),
+    hour: new Date(daySale).getHours(),
+    minute: new Date(daySale).getMinutes(),
+  };
+  const criptoMoneyCount = store.state.criptoCountSale;
+  const criptoMoneyType = store.state.criptoSelectedSale;
+  const criptoMoneyToPay = store.state.convertedMoneySale
+    .replace("$ ", "")
+    .trim();
+  if (Number(criptoMoneyCount) > store.state.criptoSaved) {
+    alert("No hay suficiente stock de cripto");
+    return;
+  } else {
+    alert("Venta de criptomoneda correcta");
+  }
+
+  userService
+    .createSale({
+      user_id: store.state.userId,
+      action: "sale",
+      crypto_code: criptoMoneyType,
+      crypto_amount: criptoMoneyCount,
+      money: criptoMoneyToPay,
+      datetime: `${daySale.day}-${daySale.month + 1}-${daySale.year} ${
+        daySale.hour
+      }:${daySale.minute}`,
+    })
+    .then(() => {
+      userService.getHistory(store.state.userId).then((history) => {
+        store.commit("changeUserHistory", history);
+      });
+    });
 }
 
 function handlerChangeCryptoCount(event) {
@@ -232,4 +413,42 @@ function handlerChangeCryptoCount(event) {
 function handlerChangeSelectCripto(event) {
   store.commit("changeCriptoSelected", event.target.value);
 }
+
+function handlerChangeCryptoCountSale(event) {
+  store.commit("changeCriptoCountSale", event.target.value);
+}
+
+function handlerChangeSelectCriptoSale(event) {
+  store.commit("changeCriptoSelectedSale", event.target.value);
+  store.commit("changeCriptoSaved", event.target.value);
+}
+
+const handlerDelete = (id) => {
+  userService.deleteHistory(id).then(() => {
+    userService.getHistory(store.state.userId).then((history) => {
+      store.commit("changeUserHistory", history);
+    });
+  });
+};
+
+const handlerEdit = (e) => {
+  e.preventDefault();
+  const payload = {
+    money: e.target.money.value ? e.target.money.value : undefined,
+    crypto_amount: e.target.mount.value ? e.target.mount.value : undefined,
+    crypto_code: e.target.type.value ? e.target.type.value : undefined,
+  };
+  const id = store.state.editID;
+  userService.editHistory(id, payload).then(() => {
+    store.commit("changeEditID", "");
+    userService.getHistory(store.state.userId).then((history) => {
+      store.commit("changeUserHistory", history);
+    });
+  });
+};
+
+const handlerChangeEditID = (id) => {
+  const flag = confirm(`Esta seguro que quiere editar el pedido id: ${id}`);
+  if (flag) store.commit("changeEditID", id);
+};
 </script>
