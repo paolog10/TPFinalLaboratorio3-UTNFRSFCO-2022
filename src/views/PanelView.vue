@@ -1,5 +1,5 @@
 <template>
-  <header id="header" class="flex sticky top-0 px-2 bg-[#EFEFEF] h-[3rem]">
+  <header id="header" class="flex sticky top-0 px-2 bg-[#5D3891] h-[3rem]">
     <ul class="flex items-center w-[80%]">
       <li class="mx-4 my-2 font-bold">
         <a href="#principales-cryptomonedas">Principales Cryptomonedas</a>
@@ -32,7 +32,7 @@
 
   <section id="principales-cryptomonedas">
     <div
-      class="flex justify-center items-center w-full h-[80vh] bg-gradient-to-r from-[#f76a1a] to-[#ffa639]"
+      class="flex justify-center items-center w-full h-[70vh] bg-gradient-to-r from-[#f76a1a] to-[#ffa639]"
     >
       <div class="grid grid-cols-5 grid-rows-2 h-[65%] w-[70%] gap-1">
         <div
@@ -69,18 +69,14 @@
 
   <section id="nueva-compra">
     <div
-      class="flex justify-center items-center flex-col w-full h-[50vh] bg-gradient-to-r from-[#f76a1a] to-[#ffa639]"
+      class="flex justify-center items-center flex-col w-full h-[40vh] bg-gradient-to-r from-[#f76a1a] to-[#ffa639]"
     >
       <div class="flex flex-col justify-center items-center w-[70%] h-[30%]">
         <h1 class="font-bold text-[40px] select-none">
           <a href="https://www.sanfrancisco.utn.edu.ar/"
-            >Bitcoin con tarjeta de crédito</a
+            >Compra Criptomoneda</a
           >
         </h1>
-        <p class="font-bold text-m">
-          Ahora puede comprar cualquier criptomoneda al instante con tarjeta de
-          crédito
-        </p>
       </div>
       <div class="flex justify-center items-center w-[70%] h-[35%] gap-[40px]">
         <div
@@ -137,7 +133,7 @@
 
   <section id="nueva-venta">
     <div
-      class="flex justify-center items-center flex-col w-full h-[50vh] bg-red-500"
+      class="flex justify-center items-center flex-col w-full h-[40vh] bg-gradient-to-r from-[#f76a1a] to-[#ffa639]"
     >
       <h1 class="font-bold text-[40px] select-none">Venta Criptomoneda</h1>
       <div class="flex justify-center items-center w-[70%] h-[35%] gap-[40px]">
@@ -203,9 +199,9 @@
 
   <section id="movimientos">
     <div
-      class="flex justify-center items-center flex-col w-full h-[60vh] bg-green-500 gap-3"
+      class="flex justify-center items-center flex-col w-full h-[50vh] gap-3 bg-gradient-to-r from-[#f76a1a] to-[#ffa639]"
     >
-      <h1 class="font-bold text-[40px]">Movimientos</h1>
+      <h1 class="font-bold text-[40px]">Historial Movimientos</h1>
       <div
         class="flex justify-start items-center h-[30rem] flex-col h-[40vh] overflow-y-scroll"
       >
@@ -245,8 +241,9 @@
 
   <section id="edicion">
     <div
-      class="flex justify-center items-center flex-col w-full h-[60vh] bg-blue-500 gap-3"
+      class="flex justify-center items-center flex-col w-full h-[100vh] gap-3 bg-gradient-to-r from-[#f76a1a] to-[#ffa639]"
     >
+    <h1 class="font-bold text-[40px]">Editar Registro</h1>
       <div
         class="flex justify-start items-center flex-col h-[40vh] overflow-y-scroll"
       >
@@ -278,41 +275,47 @@
               <td class="px-6 py-4">{{ elem.crypto_amount }}</td>
               <td class="px-6 py-4">{{ elem.crypto_code.toUpperCase() }}</td>
               <td class="grid grid-cols-2 px-6 py-4 gap-2">
-                <button class="flex jsutify-center items-center bg-green-300">
+                <button class="flex justify-center items-center bg-green-500">
                   <p
-                    class="w-full text-sm font-bold text-black"
+                    class="hover:bg-black-500 text-black font-semibold hover:text-white py-2 px-6 border border-[#5D3891] hover:border-transparent rounded"
                     @click="(e) => handlerChangeEditID(elem._id)"
                   >
                     Editar
                   </p>
                 </button>
                 <button
-                  class="flex justify-center items-center bg-red-300"
+                  class="flex justify-center items-center bg-red-500"
                   @click="(e) => handlerDelete(elem._id)"
                 >
-                  <p class="w-full text-sm font-bold text-black">Eliminar</p>
+                  <p class="hover:bg-black-500 text-black font-semibold hover:text-white py-2 px-4 border border-[#5D3891] hover:border-transparent rounded">Eliminar</p>
                 </button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
-      <div v-if="store.state.editID" class="w-[70%] h-[100px] bg-white">
-        <p>Usted quiere editar el registro {{ store.state.editID }}</p>
-        <form @submit="(e) => handlerEdit(e)">
-          <input type="text" id="mount" placeholder="Monto" />
-          <input type="text" id="money" placeholder="Cantidad de dinero" />
-          <select id="type">
-            <option value="">Selecciona una cripto</option>
-            <option
-              v-for="elem in $store.state.topCryptos"
-              :value="elem.symbol"
-            >
-              <p>{{ elem.name }}</p>
-            </option>
-          </select>
-          <button>Editar registro</button>
-        </form>
+
+      <div v-if="store.state.editID" class="w-[40%] h-[260px] bg-white rounded-xl">
+        <p class="flex justify-center items-center text-black font-semibold">Usted está editando el registro {{ store.state.editID }}</p>
+        <div class="flex justify-center items-center">
+          
+          <form @submit="(e) => handlerEdit(e)">
+            <input type="text" id="mount" placeholder="Monto" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 m-2"/>
+            <input type="text" id="money" placeholder="Cantidad de dinero" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 m-2"/>
+            <select id="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 m-2">
+              <option value="">Selecciona una cripto</option>
+              <option
+                v-for="elem in $store.state.topCryptos"
+                :value="elem.symbol"
+              >
+                <p>{{ elem.name }}</p>
+              </option>
+            </select>
+            <div class="flex justify-center items-center">
+              <button class="flex justify-center items-center bg-blue-500 hover:bg-black-500 text-black font-semibold hover:text-white py-2 px-4 border border-[#5D3891] hover:border-transparent rounded m-2">Editar</button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </section>
@@ -424,11 +427,17 @@ function handlerChangeSelectCriptoSale(event) {
 }
 
 const handlerDelete = (id) => {
-  userService.deleteHistory(id).then(() => {
+  const flag = confirm(`¿Esta seguro que quiere eliminar el registro id: ${id}?`);
+
+  if(flag){
+    userService.deleteHistory(id).then(() => {
     userService.getHistory(store.state.userId).then((history) => {
       store.commit("changeUserHistory", history);
     });
-  });
+    });
+    alert(`¡Registro id: ${id} borrado correctamente!`);
+  }
+  
 };
 
 const handlerEdit = (e) => {
@@ -448,7 +457,7 @@ const handlerEdit = (e) => {
 };
 
 const handlerChangeEditID = (id) => {
-  const flag = confirm(`Esta seguro que quiere editar el pedido id: ${id}`);
+  const flag = confirm(`¿Esta seguro que quiere editar el pedido id: ${id}?`);
   if (flag) store.commit("changeEditID", id);
 };
 </script>
