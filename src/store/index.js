@@ -17,6 +17,8 @@ const store = createStore({
       criptoCountSale: "",
       criptoSaved: 0,
       editID: "",
+      actualState: {},
+      analiticsState: {},
     };
   },
   mutations: {
@@ -29,9 +31,12 @@ const store = createStore({
     },
     changeUserHistory(state, value) {
       state.userHistory = value;
+      store.commit("changeActualState", value);
+      store.commit("changeAnaliticsState", value);
     },
     changeTopCrypto(state, value) {
       state.topCryptos = value;
+      console.log(value);
     },
     changeConvertedMoney(state) {
       if (state.criptoSelected === "okb") {
@@ -70,7 +75,6 @@ const store = createStore({
       state.criptoCount = value;
       store.commit("changeConvertedMoney");
     },
-
     changeCriptoSelectedSale(state, value) {
       state.criptoSelectedSale = value;
       store.commit("changeConvertedMoneySale");
@@ -96,6 +100,66 @@ const store = createStore({
     },
     changeEditID(state, value) {
       state.editID = value;
+    },
+    changeActualState(state, values) {
+      let walletStatus = {};
+      values.forEach((history) => {
+        if (!walletStatus[history.crypto_code]) {
+          Object.defineProperty(walletStatus, history.crypto_code, {
+            value: {
+              name: history.crypto_code,
+              amount:
+                history.action == "purchase"
+                  ? Number(history.crypto_amount)
+                  : Number(history.crypto_amount) * -1,
+            },
+            writable: true,
+            configurable: true,
+            enumerable: true,
+          });
+        } else {
+          walletStatus[history.crypto_code].amount +=
+            history.action == "purchase"
+              ? Number(history.crypto_amount)
+              : Number(history.crypto_amount) * -1;
+        }
+      });
+
+      state.actualState = walletStatus;
+    },
+    changeAnaliticsState(state, values) {
+      let analiticsWallet = {};
+      values.forEach((history) => {
+        if (!analiticsWallet[history.crypto_code]) {
+          Object.defineProperty(analiticsWallet, history.crypto_code, {
+            value: {
+              name: history.crypto_code,
+              amount:
+                history.action == "purchase"
+                  ? Number(history.crypto_amount)
+                  : Number(history.crypto_amount) * -1,
+              value:
+                history.action == "purchase"
+                  ? Number(history.money) * -1
+                  : Number(history.money),
+            },
+            writable: true,
+            configurable: true,
+            enumerable: true,
+          });
+        } else {
+          analiticsWallet[history.crypto_code].amount +=
+            history.action == "purchase"
+              ? Number(history.crypto_amount)
+              : Number(history.crypto_amount) * -1;
+          analiticsWallet[history.crypto_code].value +=
+            history.action == "purchase"
+              ? Number(history.money) * -1
+              : Number(history.money);
+        }
+      });
+
+      state.analiticsState = analiticsWallet;
     },
   },
 });

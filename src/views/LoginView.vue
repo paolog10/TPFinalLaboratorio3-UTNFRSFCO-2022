@@ -1,12 +1,12 @@
 <template>
   <section id="pagina-principal">
     <div
-      class="flex justify-center items-center w-screen h-screen bg-[#EFEFEF]"
+      class="flex justify-center items-center w-screen h-screen bg-fondo bg-cover"
     >
       <div
         class="flex flex-col justify-center items-center w-[800px] h-[500px] bg-[#5D3891] p-2 rounded-xl border border-black gap-3 shadow-lg shadow-gray-900"
       >
-        <img src="../images/wallet.png" alt="wallet logo" class="w-20 h-20" />
+        <img src="../assets/wallet.png" alt="wallet logo" class="w-20 h-20" />
         <h1 class="text-[50px] font-bold">@MyBitWallet</h1>
 
         <form
