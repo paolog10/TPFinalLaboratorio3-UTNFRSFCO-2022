@@ -26,8 +26,11 @@ export default new (class UserService {
     return response.data;
   }
 
+  //Editar registro
   async editHistory(id, payload) {
     const response = await UtnInstance.patch(`transactions/${id}`, payload);
     return response.data;
   }
+
+  //Estado actual
 })();
