@@ -92,12 +92,14 @@
             </select>
             <div class="flex justify-center items-center">
               <button
+                type="submit"
                 class="flex justify-center items-center bg-green-500 hover:bg-black-500 text-black font-semibold hover:text-white py-2 px-4 border border-[#5D3891] hover:border-transparent rounded m-2"
               >
                 Editar
               </button>
               <button
-                class="flex justify-center items-center bg-none hover:bg-black-500 text-black font-semibold py-2 px-4 border border-[#5D3891] rounded m-2" @click="() => Cancel()"
+                class="flex justify-center items-center bg-none hover:bg-black-500 text-black font-semibold py-2 px-4 border border-[#5D3891] rounded m-2"
+                @click="() => Cancel()"
               >
                 Cancelar
               </button>
@@ -110,6 +112,7 @@
 </template>
 
 <script setup>
+import Joi from "joi";
 import userService from "../../services/user.service";
 import store from "../../store";
 
@@ -130,18 +133,69 @@ const handlerDelete = (id) => {
 
 const handlerEdit = (e) => {
   e.preventDefault();
+
+  //creo un objeto a editar
+
   const payload = {
-    money: e.target.money.value ? e.target.money.value : undefined,
-    crypto_amount: e.target.mount.value ? e.target.mount.value : undefined,
-    crypto_code: e.target.type.value ? e.target.type.value : undefined,
+    money: e.target.money.value ? e.target.money.value : null,
+    crypto_amount: e.target.mount.value ? e.target.mount.value : null,
+    crypto_code: e.target.type.value ? e.target.type.value : null,
   };
-  const id = store.state.editID;
-  userService.editHistory(id, payload).then(() => {
-    store.commit("changeEditID", "");
-    userService.getHistory(store.state.userId).then((history) => {
-      store.commit("changeUserHistory", history);
-    });
+
+  //validaciones
+  const validObject = Joi.object({
+    type: Joi.string().allow(null).required(),
+    amount: Joi.number().min(0).max(Number.MAX_VALUE).allow(null).required(),
+    money: Joi.number().min(0).max(Number.MAX_VALUE).allow(null).required(),
   });
+
+  const { error, value } = validObject.validate({
+    type: payload.crypto_code,
+    amount: payload.crypto_amount,
+    money: payload.money,
+  });
+
+  if (error) {
+    let keyError = error.message.match(/"(\\.|[^"\\])*"/g);
+    const errorsToRender = {
+      amount: "La cantidad de criptomonedas ingresadas no son válidas",
+      type: "Se debe seleccionar un tipo de criptomoneda a vender",
+      money: "La cantidad de dinero a pagar es inválida",
+      default: "Ah ocurrido un error, intentelo mas tarde",
+    }; // Objecto-lista de todos los errores admitidos
+
+    if (keyError) {
+      keyError = keyError.toString().replace(/"/g, "").split(".")[0]; // Separo la key del error de todo el mensaje.
+      alert(errorsToRender[keyError] || errorsToRender["default"]);
+      return;
+    }
+    alert(errorsToRender["default"]); // error default por si todo falla
+    return;
+  } else if (value.amount === 0) {
+    alert("La cantidad de criptomonedas ingresadas no son validas.");
+    return;
+  }
+
+  if (Object.values(value).filter((v) => v !== null).length == 0) {
+    alert("Debe completar alguno de los campos");
+    return;
+  }
+  //fin validaciones
+
+  const id = store.state.editID;
+  userService
+    .editHistory(id, {
+      crypto_amount: value.amount != null ? value.amount : undefined,
+      crypto_code: value.type != null ? value.type : undefined,
+      money: value.money != null ? value.money : undefined,
+    })
+    .then(() => {
+      store.commit("changeEditID", "");
+      userService.getHistory(store.state.userId).then((history) => {
+        store.commit("changeUserHistory", history);
+        alert("Editado correcto!");
+      });
+    });
 };
 
 const handlerChangeEditID = (id) => {
@@ -149,8 +203,10 @@ const handlerChangeEditID = (id) => {
   if (flag) store.commit("changeEditID", id);
 };
 
-function Cancel()
-{
-  confirm("Cancelar la edición?");
+function Cancel() {
+  const flag = confirm("Cancelar la edición?");
+  if (flag) {
+    store.commit("changeEditID", null);
+  }
 }
 </script>

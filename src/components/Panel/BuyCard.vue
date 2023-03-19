@@ -4,9 +4,7 @@
       class="flex justify-end items-center flex-col w-full h-[50vh] bg-gradient-to-r from-[#f76a1a] to-[#ffa639]"
     >
       <div class="flex flex-col justify-center items-center w-[70%] h-[30%]">
-        <h1 class="font-bold text-[50px] select-none text-black">
-          Compra
-        </h1>
+        <h1 class="font-bold text-[50px] select-none text-black">Compra</h1>
       </div>
       <div class="flex justify-center items-center w-[70%] h-[35%] gap-[40px]">
         <div
@@ -16,7 +14,7 @@
           <form class="flex outline-none pl-2">
             <input
               id="criptoMoney"
-              type="number"
+              type="string"
               class="w-[60%] text-center outline-none"
               placeholder="Cantidad a comprar"
               @change="(e) => handlerChangeCryptoCount(e)"
@@ -65,7 +63,7 @@
 </template>
 
 <script setup>
-import Joi from "joi";
+import Joi, { date } from "joi";
 import userService from "../../services/user.service";
 import store from "../../store";
 
@@ -91,20 +89,37 @@ function handlerSubmit() {
       month: Joi.number().min(0).max(12).required(),
       year: Joi.number().min(2023).max(2023).required(),
       hour: Joi.number().min(0).max(23).required(),
-      minute: Joi.number().min(0).max(59).required()
+      minute: Joi.number().min(0).max(59).required(),
     }),
-    money: Joi.number().min(0).max(Number.MAX_VALUE).required()
+    money: Joi.number().min(0).max(Number.MAX_VALUE).required(),
   });
-  const {error, value} = validObject.validate({
+  const { error, value } = validObject.validate({
     type: criptoMoneyType,
     amount: criptoMoneyCount,
     date: dayPurchase,
-    money: criptoMoneyToPay
+    money: criptoMoneyToPay,
   });
   if (error) {
-    alert("Error en algún campo o faltan, verifique");
-    return
-  };
+    let keyError = error.message.match(/"(\\.|[^"\\])*"/g);
+    const errorsToRender = {
+      amount: "La cantidad de criptomonedas ingresadas no son válidas",
+      date: "El dia ingresado es inválido o nulo.",
+      type: "Se debe seleccionar un tipo de criptomoneda a comprar",
+      money: "La cantidad de dinero a pagar es inválida",
+      default: "Ah ocurrido un error, intentelo mas tarde",
+    }; // Objecto-lista de todos los errores admitidos
+
+    if (keyError) {
+      keyError = keyError.toString().replace(/"/g, "").split(".")[0]; // Separo la key del error de todo el mensaje.
+      alert(errorsToRender[keyError] || errorsToRender["default"]);
+      return;
+    }
+    alert(errorsToRender["default"]); // error default por si todo falla
+    return;
+  } else if (value.amount === 0) {
+    alert("La cantidad de criptomonedas ingresadas no son validas.");
+    return;
+  }
 
   userService
     .createPurchase({
@@ -113,9 +128,9 @@ function handlerSubmit() {
       crypto_code: value.type,
       crypto_amount: value.amount,
       money: value.money,
-      datetime: `${value.date.day}-${value.date.month + 1}-${
-        value.date.year
-      } ${value.date.hour}:${value.date.minute}`,
+      datetime: `${value.date.day}-${value.date.month + 1}-${value.date.year} ${
+        value.date.hour
+      }:${value.date.minute}`,
     })
     .then(() => {
       userService.getHistory(store.state.userId).then((history) => {

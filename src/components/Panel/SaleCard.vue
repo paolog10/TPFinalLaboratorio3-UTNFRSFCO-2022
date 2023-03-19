@@ -87,35 +87,51 @@ function handlerSubmitSale() {
   const criptoMoneyToPay = store.state.convertedMoneySale
     .replace("$ ", "")
     .trim();
-    
-/*  
+
   const validObject = Joi.object({
     type: Joi.string().required(),
-    amount: Joi.number().min(0).max(store.state.criptoSaved).required(), //cantidad de monedas que hay de esa cripto en la billetera
+    amount: Joi.number().min(0).max(Number.MAX_VALUE).required(), //cantidad de monedas que hay de esa cripto en la billetera
     date: Joi.object({
       day: Joi.number().min(0).max(31).required(),
       month: Joi.number().min(0).max(12).required(),
       year: Joi.number().min(2023).max(2023).required(),
       hour: Joi.number().min(0).max(23).required(),
-      minute: Joi.number().min(0).max(59).required()
+      minute: Joi.number().min(0).max(59).required(),
     }),
-    money: Joi.number().min(0).max(Number.MAX_VALUE).required()
+    money: Joi.number().min(0).max(Number.MAX_VALUE).required(),
   });
 
-  const {error} = validObject.validate({
+  const { error, value } = validObject.validate({
     type: criptoMoneyType,
     amount: criptoMoneyCount,
-    date: dayPurchase,
-    money: criptoMoneyToPay
+    date: daySale,
+    money: criptoMoneyToPay,
   });
-  
 
   if (error) {
-    alert("Error en algún campo o falta, verifique");
-    return
-  };
+    let keyError = error.message.match(/"(\\.|[^"\\])*"/g);
+    const errorsToRender = {
+      amount: "La cantidad de criptomonedas ingresadas no son válidas",
+      date: "El dia ingresado es inválido o nulo.",
+      type: "Se debe seleccionar un tipo de criptomoneda a vender",
+      money: "La cantidad de dinero a pagar es inválida",
+      default: "Ah ocurrido un error, intentelo mas tarde",
+    }; // Objecto-lista de todos los errores admitidos
 
-  */
+    if (keyError) {
+      keyError = keyError.toString().replace(/"/g, "").split(".")[0]; // Separo la key del error de todo el mensaje.
+      alert(errorsToRender[keyError] || errorsToRender["default"]);
+      return;
+    }
+    alert(errorsToRender["default"]); // error default por si todo falla
+    return;
+  } else if (value.amount > store.state.criptoSaved) {
+    alert("No se puede vender mas de lo que hay en la billetera");
+    return;
+  } else if (value.amount === 0) {
+    alert("La cantidad de criptomonedas ingresadas no son validas.");
+    return;
+  }
 
   userService
     .createSale({
@@ -132,21 +148,10 @@ function handlerSubmitSale() {
       userService.getHistory(store.state.userId).then((history) => {
         store.commit("changeUserHistory", history);
       });
+      alert("Venta de criptomoneda correcta");
     });
-  
-  if (crypto_code) {
-    //la criptomoneda no esté en la billetera
-  }
-  
-  if (Number(criptoMoneyCount) > store.state.criptoSaved) {
-    alert("No hay suficiente stock de cripto");
-    return;
-  } else if (Number(criptoMoneyCount) <= 0) {
-    alert("No puede vender cantidades negativas o cero cantidad");
-  }else {
-    alert("Venta de criptomoneda correcta");
-  }  
 }
+
 function handlerChangeCryptoCountSale(event) {
   store.commit("changeCriptoCountSale", event.target.value);
 }
