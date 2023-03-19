@@ -14,7 +14,7 @@
         <a href="#account">Resumen de Cuenta</a>
       </li>
       <li class="mx-4 my-2 font-bold text-white">
-        <a href="#edicion">Editar cartera</a>
+        <a href="#edit">Editar cartera</a>
       </li>
     </ul>
     <div class="flex justify-end items-center w-[20%] gap-3">
@@ -31,8 +31,9 @@
 
   <section id="principales-cryptomonedas">
     <div
-      class="flex justify-center items-center w-full h-[100vh] bg-gradient-to-r from-[#f76a1a] to-[#ffa639]"
+      class="flex flex-col justify-center items-center w-full h-[100vh] bg-gradient-to-r from-[#f76a1a] to-[#ffa639] gap-[30px]"
     >
+    <h1 class="text-[50px] font-bold">Bienvenido a MyBitWallet</h1>
       <div class="grid grid-cols-5 grid-rows-2 h-[50%] w-[70%] gap-1">
         <div
           class="flex flex-col justify-center items-center gap-1 bg-[#5D3891] rounded border border-gray-700"
@@ -81,21 +82,28 @@
 
   <div id="account">
     <h2
-    class="w-full text-center text-[50px] font-bold bg-gradient-to-r from-[#f76a1a] to-[#ffa639] pb-1"
-  >
-    Información de Cuenta
-  </h2>
+      class="w-full text-center text-[50px] font-bold bg-gradient-to-r from-[#f76a1a] to-[#ffa639] pb-1"
+    >
+      Información de Cuenta
+    </h2>
     <div
       class="grid grid-cols-2 grid-rows-2 w-full h-[90vh] gap-2 bg-gradient-to-r from-[#f76a1a] to-[#ffa639]"
     >
-      <div class="row-start-1 col-start-1 object-cover bg-cover bg-center"><a href="http://www.sanfrancisco.utn.edu.ar/" target="_blank"><img src="../assets/rooftop.jpg" alt="" srcset=""></a></div>
+      <div class="flex p-[20px]">
+        <a
+          href="http://www.sanfrancisco.utn.edu.ar/"
+          target="_blank"
+          class="w-full h-full"
+        >
+          <img src="../assets/rooftop.jpg" class="w-full h-full rounded" />
+        </a>
+      </div>
       <HistoricalCard class="col-start-2" />
       <AnaliticCard class="row-start-2 col-start-1" />
       <StatusCard class="row-start-2 col-start-2" />
     </div>
   </div>
-  <!--row-start-1 col-start-1 object-cover bg-cover bg-center-->
-  <EditCard />
+  <EditCard id="edit"/>
 </template>
 
 <script setup>
@@ -117,4 +125,5 @@ function CheckUser() {
     router.push("/");
   }
 }
+
 </script>

@@ -24,17 +24,19 @@
                 store.state.topCryptos.find((v) => v.symbol == elem.name)
                   .current_price_ars[0].bid >=
             1
-              ? ` + $${
-                  (elem.value +
+              ? ` + $${(
+                  elem.value +
                   elem.amount *
                     store.state.topCryptos.find((v) => v.symbol == elem.name)
-                      .current_price_ars[0].bid).toFixed(2)
-                }`
+                      .current_price_ars[0].bid
+                ).toFixed(2)}`
               : ` - $${
-                  (elem.value +
+                  (
+                    elem.value +
                     elem.amount *
                       store.state.topCryptos.find((v) => v.symbol == elem.name)
-                        .current_price_ars[0].bid).toFixed(2)*-1
+                        .current_price_ars[0].bid
+                  ).toFixed(2) * -1
                 }`
           }}
         </p>

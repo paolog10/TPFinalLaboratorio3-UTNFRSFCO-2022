@@ -4,8 +4,8 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'fondo': "url('/src/assets/fondo.jpg')"
-      }
+        fondo: "url('/src/assets/fondo.jpg')",
+      },
     },
   },
   plugins: [],
